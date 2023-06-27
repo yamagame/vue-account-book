@@ -23,7 +23,7 @@ class Subject {
   }
 }
 
-class Deal {
+export class Deal {
   id: number
   name: string
   date: Date

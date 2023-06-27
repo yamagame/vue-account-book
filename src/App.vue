@@ -1,28 +1,41 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { ref, computed, onMounted } from 'vue'
-import { readCSVToDeal } from "./entity/deal"
+import { readCSVToDeal, Deal } from "./entity/deal"
 import { getFormattedDate } from "./utils/date"
 const accountCSV = ref(``);
 const deals = computed(() => readCSVToDeal(accountCSV.value))
 const years = computed(() => {
-  return ["ALL", ...Object.keys(deals.value.map(v => getFormattedDate(v.date, "yyyy")).reduce((a, v) => { a[v] = true; return a; }, {}))]
+  const years = deals.value
+    .map<string>(v => getFormattedDate(v.date, "yyyy"))
+    .reduce((a: { [index: string]: boolean; }, v: string) => {
+      a[v] = true;
+      return a;
+    }, {})
+  return ["ALL", ...Object.keys(years)]
 })
 const accountYear = ref("ALL")
 const months = ref([...Array(13).keys()])
 const accountMonth = ref(0)
 const accountSubject = ref("ALL")
 const subjects = computed(() => {
-  return ["ALL", ...Object.keys(deals.value.reduce((a, v) => { a[v.kari.string()] = true; a[v.kashi.string()] = true; return a; }, {})).sort()]
+  const subjects = deals.value
+    .reduce((a: { [index: string]: boolean; }, v: Deal) => {
+      a[v.kari.string()] = true; a[v.kashi.string()] = true;
+      return a;
+    }, {})
+  return ["ALL", ...Object.keys(subjects).sort()]
 })
 const bookType = ref("仕訳帳")
 const books = ["仕訳帳", "総勘定元帳", "出納帳"]
 onMounted(() => {
   const data = localStorage.getItem("vue-account-book");
-  accountCSV.value = data
+  if (data) accountCSV.value = data
 });
-const inputEvent = (e) => {
-  localStorage.setItem('vue-account-book', e.target.value)
+const inputEvent = (e: Event) => {
+  if (e.target instanceof HTMLInputElement) {
+    localStorage.setItem('vue-account-book', e.target.value)
+  }
 }
 </script>
 
