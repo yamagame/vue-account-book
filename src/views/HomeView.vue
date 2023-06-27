@@ -48,13 +48,23 @@ const deals = computed(() => {
   }
   return deals;
 })
+type deal = {
+  id: number;
+  date: string;
+  kari: string;
+  karivalue: number | string;
+  kashi: string;
+  kashivalue: number | string;
+  name: string;
+  last: boolean;
+}
 const fields = computed(() => {
   const d = deals.value.map((deal, i) => ({
     id: i,
     date: getFormattedDate(deal.date, "yyyy/MM/dd"),
     kari: deal.kari.string(),
     karivalue: deal.kari.string() !== "" ? deal.value : "",
-    kashi: deal.kashi.string(),
+    kashi: (deal.kashi.string()),
     kashivalue: deal.kashi.string() !== "" ? deal.value : "",
     name: deal.name,
     last: false,
@@ -64,12 +74,16 @@ const fields = computed(() => {
     date: "",
     kari: "",
     karivalue: d.reduce((a, v) => {
-      a += v.karivalue | 0
+      if (typeof v.karivalue === "number") {
+        a += v.karivalue
+      }
       return a;
     }, 0),
     kashi: "",
     kashivalue: d.reduce((a, v) => {
-      a += v.kashivalue | 0
+      if (typeof v.kashivalue === "number") {
+        a += v.kashivalue
+      }
       return a;
     }, 0),
     name: "",
@@ -77,8 +91,8 @@ const fields = computed(() => {
   })
   return d
 })
-const getBackgroundColor = (deal) => {
-  if (deal.last) return `#E0F0FF`
+const getBackgroundColor = (d: deal) => {
+  if (d.last) return `#E0F0FF`
   return
 }
 </script>

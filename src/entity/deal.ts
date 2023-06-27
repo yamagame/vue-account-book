@@ -67,7 +67,3 @@ export function readCSVToDeal(csv: string) {
     )
   return ret
 }
-
-function saveAccount(csv: string) {
-  localStorage.setItem('vue-account-book', csv)
-}
