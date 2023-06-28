@@ -26,13 +26,20 @@ class Subject {
 export class Deal {
   id: number
   name: string
-  date: Date
+  date: Date | undefined
   kari: Subject
   kashi: Subject
   value: number
   comment: string
 
-  constructor(id: number, name: string, kari: string, kashi: string, value: number, date: Date) {
+  constructor(
+    id: number,
+    name: string,
+    kari: string,
+    kashi: string,
+    value: number,
+    date: Date | undefined,
+  ) {
     this.id = id
     this.name = name
     this.kari = new Subject(kari)
@@ -43,12 +50,21 @@ export class Deal {
   }
 }
 
+function parseDate(date: string) {
+  const isInvalidDate = (date: Date) => Number.isNaN(date.getTime())
+  const r = new Date(date)
+  if (isInvalidDate(r)) {
+    return undefined
+  }
+  return r
+}
+
 export function readCSVToDeal(csv: string) {
   const deals = parse(csv)
   const ret = deals
     .filter(
       (v) =>
-        v.length > 5 &&
+        v.length > 4 &&
         v
           .map((v) => v.value)
           .join('')
@@ -58,11 +74,11 @@ export function readCSVToDeal(csv: string) {
       (v, i) =>
         new Deal(
           i,
-          v.length > 5 ? v[5].value : '', // 名目
-          v.length > 2 ? v[2].value : '', // 借り
-          v.length > 3 ? v[3].value : '', // 貸し
-          v.length > 4 ? +v[4].value : 0, // 金額
-          v.length > 1 ? new Date(v[1].value) : new Date(), // 日付
+          v.length > 4 ? v[4].value : '', // 名目
+          v.length > 1 ? v[1].value : '', // 借り
+          v.length > 2 ? v[2].value : '', // 貸し
+          v.length > 3 ? +v[3].value : 0, // 金額
+          v.length > 0 ? parseDate(v[0].value) : new Date(), // 日付
         ),
     )
   return ret

@@ -7,6 +7,7 @@ const accountCSV = ref(``);
 const deals = computed(() => readCSVToDeal(accountCSV.value))
 const years = computed(() => {
   const years = deals.value
+    .filter(v => v.date != undefined)
     .map<string>(v => getFormattedDate(v.date, "yyyy"))
     .reduce((a: { [index: string]: boolean; }, v: string) => {
       a[v] = true;
@@ -20,6 +21,7 @@ const accountMonth = ref(0)
 const accountSubject = ref("ALL")
 const subjects = computed(() => {
   const subjects = deals.value
+    .filter(v => v.date != undefined)
     .reduce((a: { [index: string]: boolean; }, v: Deal) => {
       a[v.kari.string()] = true; a[v.kashi.string()] = true;
       return a;

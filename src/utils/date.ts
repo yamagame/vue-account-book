@@ -1,4 +1,7 @@
-export const getFormattedDate = (date: Date, format: string) => {
+export const getFormattedDate = (date: Date | undefined, format: string) => {
+  if (date === undefined) {
+    return ''
+  }
   const symbol = {
     M: date.getMonth() + 1,
     d: date.getDate(),
