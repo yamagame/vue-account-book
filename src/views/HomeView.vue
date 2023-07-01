@@ -118,7 +118,10 @@ const fields = computed(() => {
     last: true,
   }
   d.push(total)
-  return d
+  return d.map((d, i) => {
+    d.id = i
+    return d
+  })
 })
 
 // 月締合計計算
