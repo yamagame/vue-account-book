@@ -163,8 +163,8 @@ const getBackgroundColor = (d: { last: boolean }) => {
 <template>
   <div class="mark-body-container">
     <div class="tbl-bdr">
-      <div style="display:inline">
-        <table style="float:left;margin:10px;">
+      <div style="display:inline;">
+        <table style="display:inline-table;margin:10px;">
           <thead>
             <tr :style="{ 'background-color': '#E0E0E0' }">
               <th style=" width:70px">日付</th>
@@ -182,7 +182,7 @@ const getBackgroundColor = (d: { last: boolean }) => {
         </table>
       </div>
       <div style="display:inline">
-        <table style="float:left;margin:10px;">
+        <table style="display:inline-table;margin:10px;">
           <thead>
             <tr :style="{ 'background-color': '#E0E0E0' }">
               <th style=" width:70px">日付</th>
