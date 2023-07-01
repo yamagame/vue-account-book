@@ -23,10 +23,12 @@ const subjects = computed(() => {
   const subjects = deals.value
     .filter(v => v.date != undefined)
     .reduce((a: { [index: string]: boolean; }, v: Deal) => {
-      a[v.kari.string()] = true; a[v.kashi.string()] = true;
+      a[v.kari.string()] = true;
+      a[v.kashi.string()] = true;
       return a;
     }, {})
-  return ["ALL", ...Object.keys(subjects).sort()]
+  const retval = ["資産", "負債", "費用", "収益", ...Object.keys(subjects).sort()]
+  return ["ALL", ...retval]
 })
 const bookType = ref("仕訳帳")
 const books = ["仕訳帳", "総勘定元帳", "出納帳"]
@@ -35,7 +37,7 @@ onMounted(() => {
   if (data) accountCSV.value = data
 });
 const inputEvent = (e: Event) => {
-  if (e.target instanceof HTMLInputElement) {
+  if (e.target instanceof HTMLTextAreaElement) {
     localStorage.setItem('vue-account-book', e.target.value)
   }
 }
