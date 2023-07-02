@@ -83,3 +83,23 @@ export function readCSVToDeal(csv: string) {
     )
   return ret
 }
+
+export class DealRecord {
+  id: number = 0
+  month: string = ''
+  date: string = ''
+  kari: string = ''
+  karivalue: number | string = ''
+  kashi: string = ''
+  kashivalue: number | string = ''
+  name: string = ''
+  last: boolean = false
+}
+
+export class MonthlyRecord {
+  id: number = 0
+  date: string = ''
+  kari: number = 0
+  kashi: number = 0
+  last: boolean = false
+}

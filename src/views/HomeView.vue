@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { readCSVToDeal } from "../entity/deal"
+import { readCSVToDeal, DealRecord, MonthlyRecord } from "../entity/deal"
 import { getFormattedDate } from "../utils/date"
+import DealTable from "../components/DealTable.vue"
+import SumTable from "../components/SumTable.vue"
 const props = defineProps<{
   csv: string
   year: string
@@ -48,17 +50,6 @@ const deals = computed(() => {
   }
   return deals;
 })
-type Record = {
-  id: number
-  month: string
-  date: string
-  kari: string
-  karivalue: number | string
-  kashi: string
-  kashivalue: number | string
-  name: string
-  last: boolean
-}
 const fields = computed(() => {
   let month = ""
   const d = deals.value.map(deal => deal)
@@ -66,7 +57,7 @@ const fields = computed(() => {
       if (a.date == undefined || b.date == undefined) return 0
       return a.date.getTime() - b.date.getTime()
     })
-    .map<Record>((deal, i) => ({
+    .map<DealRecord>((deal, i) => ({
       id: i,
       month: getFormattedDate(deal.date, "yyyy/MM"),
       date: getFormattedDate(deal.date, "yyyy/MM/dd"),
@@ -94,7 +85,7 @@ const fields = computed(() => {
       month = deal.month
       a.push(deal)
       return a
-    }, [] as Record[])
+    }, [] as DealRecord[])
   // 合計値計算
   const total = {
     id: d.length,
@@ -130,7 +121,7 @@ const monthly = computed(() => {
     const date = getFormattedDate(deal.date, "yyyy/MM")
     if (date === "") return a
     if (a[date] === undefined) {
-      a[date] = { kari: 0, kashi: 0 }
+      a[date] = { id: 0, date: "", kari: 0, kashi: 0, last: false, }
     }
     if (deal.kari.string() !== "") {
       a[date].kari += deal.value
@@ -139,7 +130,7 @@ const monthly = computed(() => {
       a[date].kashi += deal.value
     }
     return a
-  }, {} as { [index: string]: { kari: number, kashi: number } })
+  }, {} as { [index: string]: MonthlyRecord })
   const d = Object.keys(monthly).sort().map((v, i) => (
     {
       id: i,
@@ -153,60 +144,19 @@ const monthly = computed(() => {
     a.kari += v.kari
     a.kashi += v.kashi
     return a
-  }, { id: d.length, date: "", kari: 0, kashi: 0, last: true }))
+  }, { id: d.length, date: "", kari: 0, kashi: 0, last: true } as MonthlyRecord))
   return d
 })
-
-const getBackgroundColor = (d: { last: boolean }) => {
-  if (d.last) return `#E0F0FF`
-  return
-}
 </script>
 
 <template>
   <div class="mark-body-container">
     <div class="tbl-bdr">
       <div style="display:inline;">
-        <table style="display:inline-table;margin:10px;">
-          <thead>
-            <tr :style="{ 'background-color': '#E0E0E0' }">
-              <th style=" width:70px">日付</th>
-              <th style="width:100px">借り方合計</th>
-              <th style="width:100px">貸し方合計</th>
-            </tr>
-          </thead>
-          <tbody v-for="deal of monthly" :key="deal.id">
-            <tr :style="{ 'background-color': getBackgroundColor(deal) }">
-              <td>{{ deal.date }}</td>
-              <td>{{ deal.kari }}</td>
-              <td>{{ deal.kashi }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <SumTable :monthly="monthly" sumBGColor="#E0F0FF" />
       </div>
       <div style="display:inline">
-        <table style="display:inline-table;margin:10px;">
-          <thead>
-            <tr :style="{ 'background-color': '#E0E0E0' }">
-              <th style=" width:70px">日付</th>
-              <th style="width:100px">借り方</th>
-              <th style="width:100px">金額</th>
-              <th style="width:100px">貸し方</th>
-              <th style="width:100px">金額</th>
-              <th style="width:200px">名目</th>
-            </tr>
-          </thead>
-          <tbody v-for="deal of fields" :key="deal.id">
-            <tr :style="{ 'background-color': getBackgroundColor(deal) }">
-              <td>{{ deal.date }}</td>
-              <td>{{ deal.kari }}</td>
-              <td>{{ deal.karivalue }}</td>
-              <td>{{ deal.kashi }}</td>
-              <td>{{ deal.kashivalue }}</td>
-              <td>{{ deal.name }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <DealTable :fields="fields" sumBGColor="#E0F0FF" />
       </div>
     </div>
   </div>
