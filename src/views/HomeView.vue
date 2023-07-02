@@ -11,6 +11,12 @@ const props = defineProps<{
   subject: string
   book: string
 }>()
+const isSameSubject = (subject: string, key: string) => {
+  if (key.indexOf(":") >= 0) {
+    return subject === key
+  }
+  return subject.indexOf(key) === 0
+}
 const deals = computed(() => {
   let deals = readCSVToDeal(props.csv)
   if (props.year !== "ALL") {
@@ -20,15 +26,15 @@ const deals = computed(() => {
     deals = deals.filter(v => getFormattedDate(v.date, "M") === `${props.month}`)
   }
   if (props.subject !== "ALL") {
-    deals = deals.filter(v => v.kari.string().indexOf(props.subject) === 0 || v.kashi.string().indexOf(props.subject) === 0)
+    deals = deals.filter(v => isSameSubject(v.kari.string(), props.subject) || isSameSubject(v.kashi.string(), props.subject))
   }
   if (props.book === "総勘定元帳") {
     deals = deals.map(v => {
-      if (v.kari.string() === props.subject) {
+      if (isSameSubject(v.kari.string(), props.subject)) {
         v.kari.category = ""
         v.kari.name = ""
       }
-      if (v.kashi.string() === props.subject) {
+      if (isSameSubject(v.kashi.string(), props.subject)) {
         v.kashi.category = ""
         v.kashi.name = ""
       }
@@ -37,11 +43,11 @@ const deals = computed(() => {
   }
   if (props.book === "出納帳") {
     deals = deals.map(v => {
-      if (v.kari.string() !== props.subject) {
+      if (!isSameSubject(v.kari.string(), props.subject)) {
         v.kari.category = ""
         v.kari.name = ""
       }
-      if (v.kashi.string() !== props.subject) {
+      if (!isSameSubject(v.kashi.string(), props.subject)) {
         v.kashi.category = ""
         v.kashi.name = ""
       }

@@ -1,0 +1,1 @@
+import{o as r,c as s}from"./index-b29088ca.js";const a=(o,t)=>{const c=o.__vccOpts||o;for(const[e,n]of t)c[e]=n;return c},_={},f={class:"mark-body-container"};function i(o,t){return r(),s("div",f," Vue Account Book ")}const d=a(_,[["render",i]]);export{d as default};
