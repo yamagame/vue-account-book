@@ -96,7 +96,7 @@ const fields = computed(() => {
   const total = {
     id: d.length,
     month: "",
-    date: "",
+    date: "合計",
     kari: "",
     karivalue: d.reduce((a, v) => {
       if (typeof v.karivalue === "number") {
@@ -115,11 +115,39 @@ const fields = computed(() => {
     last: true,
   }
   d.push(total)
+  const balance = (value: number) => {
+    return ({
+      id: 0,
+      month: "",
+      date: "残高",
+      kari: "",
+      karivalue: "",
+      kashi: "",
+      kashivalue: value,
+      name: "",
+      last: true,
+    })
+  }
+  d.push(balance(total.karivalue - total.kashivalue))
   return d.map((d, i) => {
     d.id = i
     return d
   })
 })
+
+const add = (a: number | string, b: number | string) => {
+  if (typeof a === "string" || typeof b === "string") {
+    return a
+  }
+  return a + b
+}
+
+const sub = (a: number | string, b: number | string) => {
+  if (typeof a === "string" || typeof b === "string") {
+    return 0
+  }
+  return a - b
+}
 
 // 月締合計計算
 const monthly = computed(() => {
@@ -130,10 +158,10 @@ const monthly = computed(() => {
       a[date] = { id: 0, date: "", kari: 0, kashi: 0, last: false, }
     }
     if (deal.kari.string() !== "") {
-      a[date].kari += deal.value
+      a[date].kari = add(a[date].kari, deal.value)
     }
     if (deal.kashi.string() !== "") {
-      a[date].kashi += deal.value
+      a[date].kashi = add(a[date].kashi, deal.value)
     }
     return a
   }, {} as { [index: string]: MonthlyRecord })
@@ -146,11 +174,22 @@ const monthly = computed(() => {
       last: false,
     }
   ))
-  d.push(d.reduce((a, v) => {
-    a.kari += v.kari
-    a.kashi += v.kashi
+  const total = d.reduce((a, v) => {
+    a.kari = add(a.kari, v.kari)
+    a.kashi = add(a.kashi, v.kashi)
     return a
-  }, { id: d.length, date: "", kari: 0, kashi: 0, last: true } as MonthlyRecord))
+  }, { id: d.length, date: "合計", kari: 0, kashi: 0, last: true } as MonthlyRecord)
+  d.push(total)
+  const balance = (value: number) => {
+    return {
+      id: d.length,
+      date: "残高",
+      kari: "",
+      kashi: value,
+      last: true,
+    }
+  }
+  d.push(balance(sub(total.kari, total.kashi)))
   return d
 })
 </script>

@@ -99,7 +99,7 @@ export class DealRecord {
 export class MonthlyRecord {
   id: number = 0
   date: string = ''
-  kari: number = 0
-  kashi: number = 0
+  kari: number | string = 0
+  kashi: number | string = 0
   last: boolean = false
 }
