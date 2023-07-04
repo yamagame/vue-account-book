@@ -121,9 +121,9 @@ const fields = computed(() => {
       month: "",
       date: "残高",
       kari: "",
-      karivalue: "",
+      karivalue: value,
       kashi: "",
-      kashivalue: value,
+      kashivalue: -value,
       name: "",
       last: true,
     })
@@ -184,8 +184,8 @@ const monthly = computed(() => {
     return {
       id: d.length,
       date: "残高",
-      kari: "",
-      kashi: value,
+      kari: value,
+      kashi: -value,
       last: true,
     }
   }
