@@ -82,6 +82,7 @@ export function readCSVToDeal(csv: string) {
           .join('')
           .trim() != '',
     )
+    .filter((v) => v[0].value[0] !== '#')
     .map(
       (v, i) =>
         new Deal(
@@ -376,27 +377,26 @@ export const settlementReport = (deals: Deal[], year: string) => {
   const capital = listSubjects(deals, { year, month: 0, subject: '資本' })
   const income = listSubjects(deals, { year, month: 0, subject: '収益' })
   const cost = listSubjects(deals, { year, month: 0, subject: '費用' })
-  // const debt = listSubjects(deals, { year, month: 0, subject: '負債' })
+  const debt = listSubjects(deals, { year, month: 0, subject: '負債' })
+  const assetTotal = sum(Object.keys(assets))
+  const capitalTotal =
+    -sum(Object.keys(capital)) - (sum(Object.keys(income)) + sum(Object.keys(cost)))
   const r: ReportRecord[] = []
   r.push(new ReportRecord('貸借対照表'))
   r.push(new ReportRecord('資産の部'))
   Object.keys(assets).forEach((k) => {
     r.push(new ReportRecord('', k, result(k)))
   })
-  r.push(new ReportRecord('', '資産合計', sum(Object.keys(assets))))
+  const assetRecord = new ReportRecord('', '資産合計', assetTotal)
+  if (assetTotal != capitalTotal) assetRecord.color = 'red'
+  r.push(assetRecord)
   r.push(new ReportRecord('資本の部'))
-  Object.keys(capital).forEach((k) => {
-    r.push(new ReportRecord('', k, -result(k)))
-  })
-  // r.push(new ReportRecord('', '負債', -sum(Object.keys(debt))))
+  r.push(new ReportRecord('', '資本', -sum(Object.keys(capital))))
+  r.push(new ReportRecord('', '負債', sum(Object.keys(debt))))
   r.push(new ReportRecord('', '所得', -(sum(Object.keys(income)) + sum(Object.keys(cost)))))
-  r.push(
-    new ReportRecord(
-      '',
-      '資本合計',
-      -sum(Object.keys(capital)) - (sum(Object.keys(income)) + sum(Object.keys(cost))),
-    ),
-  )
+  const capitalRecord = new ReportRecord('', '資本合計', capitalTotal)
+  if (assetTotal != capitalTotal) capitalRecord.color = 'red'
+  r.push(capitalRecord)
   r.push(new ReportRecord())
   r.push(new ReportRecord('損益計算書'))
   r.push(new ReportRecord('', '売上', -sum(Object.keys(income))))
