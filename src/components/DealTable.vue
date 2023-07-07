@@ -27,9 +27,9 @@ const getBackgroundColor = (d: { last: boolean }, sumBGColor: string) => {
         <tr :style="{ 'background-color': getBackgroundColor(deal, sumBGColor) }">
           <td>{{ deal.date }}</td>
           <td>{{ deal.kari }}</td>
-          <td>{{ deal.karivalue }}</td>
+          <td style="text-align: right;">{{ deal.karivalue }}</td>
           <td>{{ deal.kashi }}</td>
-          <td>{{ deal.kashivalue }}</td>
+          <td style="text-align: right;">{{ deal.kashivalue }}</td>
           <td>{{ deal.name }}</td>
         </tr>
       </tbody>

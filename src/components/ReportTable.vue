@@ -19,7 +19,7 @@ defineProps<{
       <tr>
         <td>{{ deal.name }}</td>
         <td>{{ deal.subject }}</td>
-        <td>{{ deal.value }}</td>
+        <td :style="{ 'text-align': 'right', 'color': deal.color }">{{ deal.value }}</td>
       </tr>
     </tbody>
   </table>

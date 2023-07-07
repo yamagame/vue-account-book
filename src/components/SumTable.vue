@@ -22,8 +22,8 @@ const getBackgroundColor = (d: { last: boolean }, sumBGColor: string) => {
     <tbody v-for="deal of monthly" :key="deal.id">
       <tr :style="{ 'background-color': getBackgroundColor(deal, sumBGColor) }">
         <td>{{ deal.date }}</td>
-        <td>{{ deal.kari }}</td>
-        <td>{{ deal.kashi }}</td>
+        <td style="text-align: right;">{{ deal.kari }}</td>
+        <td style="text-align: right;">{{ deal.kashi }}</td>
       </tr>
     </tbody>
   </table>
