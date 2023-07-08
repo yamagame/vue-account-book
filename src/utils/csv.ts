@@ -67,3 +67,23 @@ export function parse(src: string) {
   }
   return row
 }
+
+export function stringify(parsed: string[][]) {
+  let ret = ''
+  parsed.forEach((row, i) => {
+    if (i > 0) {
+      ret += '\n'
+    }
+    row.forEach((col, i) => {
+      if (i > 0) {
+        ret += delim
+      }
+      if (col.indexOf(',') >= 0 || col.indexOf('"') >= 0 || col.indexOf('\n') >= 0) {
+        ret += `"${col.replace(/"/g, '""')}"`
+      } else {
+        ret += col
+      }
+    })
+  })
+  return ret
+}

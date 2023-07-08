@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { stringify } from '../utils/csv'
+import { computed } from "vue";
 import { DealRecord } from "../entity/deal"
-defineProps<{
+import CopyButton from "./CopyButton.vue"
+const props = defineProps<{
   fields: DealRecord[]
   sumBGColor: string
 }>()
@@ -8,11 +11,19 @@ const getBackgroundColor = (d: { last: boolean }, sumBGColor: string) => {
   if (d.last) return sumBGColor
   return
 }
+const csvText = computed(() => {
+  const csv: string[][] = []
+  csv.push(["日付", "借り方", "金額", "貸し方", "金額", "名目"])
+  props.fields.forEach(deal => {
+    csv.push([deal.date, deal.kari, deal.karivalue + "", deal.kashi, deal.kashivalue + "", deal.name])
+  })
+  return stringify(csv)
+})
 </script>
 
 <template>
   <div style="display:inline">
-    <table style="display:inline-table;margin:10px;">
+    <table style="display:inline-table;">
       <thead>
         <tr :style="{ 'background-color': '#E0E0E0' }">
           <th style=" width:70px">日付</th>
@@ -34,5 +45,6 @@ const getBackgroundColor = (d: { last: boolean }, sumBGColor: string) => {
         </tr>
       </tbody>
     </table>
+    <CopyButton :text="csvText" />
   </div>
 </template>

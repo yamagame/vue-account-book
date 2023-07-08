@@ -39,14 +39,14 @@ const report = computed(() => {
   <div class="mark-body-container">
     <div class="tbl-bdr">
       <div style="display:inline-block">
-        <div>
+        <div style="margin:10px;">
           <ReportTable :report="report" sumBGColor="#E0F0FF" />
         </div>
-        <div>
+        <div style="margin:10px;">
           <SumTable :monthly="monthly" sumBGColor="#E0F0FF" />
         </div>
       </div>
-      <div style="display:inline-block;vertical-align: top;">
+      <div style="display:inline-block;vertical-align: top;margin:10px;">
         <DealTable :fields="fields" sumBGColor="#E0F0FF" />
       </div>
     </div>
