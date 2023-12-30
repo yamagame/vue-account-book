@@ -380,7 +380,9 @@ export const settlementReport = (deals: Deal[], year: string) => {
   const debt = listSubjects(deals, { year, month: 0, subject: '負債' })
   const assetTotal = sum(Object.keys(assets))
   const capitalTotal =
-    -sum(Object.keys(capital)) - (sum(Object.keys(income)) + sum(Object.keys(cost)))
+    -sum(Object.keys(capital)) -
+    (sum(Object.keys(income)) + sum(Object.keys(cost))) -
+    sum(Object.keys(debt))
   const r: ReportRecord[] = []
   r.push(new ReportRecord('貸借対照表'))
   r.push(new ReportRecord('資産の部'))
@@ -392,7 +394,7 @@ export const settlementReport = (deals: Deal[], year: string) => {
   r.push(assetRecord)
   r.push(new ReportRecord('資本の部'))
   r.push(new ReportRecord('', '資本', -sum(Object.keys(capital))))
-  r.push(new ReportRecord('', '負債', sum(Object.keys(debt))))
+  r.push(new ReportRecord('', '負債', -sum(Object.keys(debt))))
   r.push(new ReportRecord('', '所得', -(sum(Object.keys(income)) + sum(Object.keys(cost)))))
   const capitalRecord = new ReportRecord('', '資本合計', capitalTotal)
   if (assetTotal != capitalTotal) capitalRecord.color = 'red'
